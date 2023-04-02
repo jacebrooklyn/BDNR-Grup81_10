@@ -84,3 +84,6 @@ if db.artista.count_documents({})==0: # si no hi ha dades a la colecció artista
     else: print("[5] >> Dades carregades correctament")
 
 else: print('[5] >> Dades ja carregades anteriorment')
+
+# ---------------------------- 4. Tanquem la connexió ----------------------------
+client.close()
