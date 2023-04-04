@@ -61,36 +61,30 @@ if db.publicacio.count_documents({})==0: # si no hi ha dades a la colecció publ
         e['dibuixants'] = d[i]  # inserim la llista de dibuixants
     db.publicacio.insert_many(publicacio_dict) # carreguem les dades
 
+    # Fem el embeded dels personatges de la publicació
+    personatge_dict=personatges[['nom','tipus','isbn']].to_dict('records') # utilizem format records perque cada fila sigue dict
+    for p in personatge_dict:
+        isbn=p.pop('isbn')
+        db.publicacio.update_one({'ISBN':isbn},{'$push':{'personatges':p}})    # afegim el personatge a la publicació quan coincideixin ISBN's
+
     # Comprovem que s'han afegit correctament
     if db.publicacio.count_documents({})!=26: print("[3] >> Error: No s'han carregat totes les publicacions"); sys.exit()
     else: print("[3] >> Dades carregades correctament")
 
 else: print('[3] >> Dades ja carregades anteriorment')
 
-# 3.4 Carreguem les dades dels personatges
-# db.personatge.drop() # eliminem la colecció per si ja hi ha dades
-if db.personatge.count_documents({})==0: # si no hi ha dades a la colecció personatge, les carreguem
-    print('\n4. Carregant dades dels personatges...')
-    personatge_dict=personatges[['nom','tipus']].to_dict('records') # utilizem format records perque cada fila sigue dict
-    db.personatge.insert_many(personatge_dict) # carreguem les dades
-    # Comprovem que s'han afegit correctament
-    if db.personatge.count_documents({})!=77: print("[4] >> Error: No s'han carregat tots els personatges"); sys.exit()
-    else: print("[4] >> Dades carregades correctament")
-
-else: print('[4] >> Dades ja carregades anteriorment')
-
-# 3.5 Carreguem les dades dels artistes
+# 3.4 Carreguem les dades dels artistes
 # db.artista.drop() # eliminem la colecció per si ja hi ha dades
 if db.artista.count_documents({})==0: # si no hi ha dades a la colecció artista, les carreguem
-    print('\n5. Carregant dades dels artistes...')
+    print('\n4. Carregant dades dels artistes...')
     artista_dict=artists[['Nom_artistic','nom','cognoms','data_naix','pais']].to_dict('records') # utilizem format records perque cada fila sigue dict
     db.artista.insert_many(artista_dict) # carreguem les dades
 
     # Comprovem que s'han afegit correctament
-    if db.artista.count_documents({})!=7: print("[5] >> Error: No s'han carregat tots els artistes"); sys.exit()
-    else: print("[5] >> Dades carregades correctament")
+    if db.artista.count_documents({})!=7: print("[4] >> Error: No s'han carregat tots els artistes"); sys.exit()
+    else: print("[4] >> Dades carregades correctament")
 
-else: print('[5] >> Dades ja carregades anteriorment')
+else: print('[4] >> Dades ja carregades anteriorment')
 
 # ---------------------------- 4. Tanquem la connexió ----------------------------
 client.close()
