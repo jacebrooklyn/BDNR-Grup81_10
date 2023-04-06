@@ -1,0 +1,42 @@
+use("TendaComics");
+
+// Consulta 1
+//? Les 5 publicacions amb major preu. Mostrar només el títol i preu.
+db.publicacio.find({}, { _id: 0, titol: 1, preu: 1 }).sort({ preu: -1 }).limit(5);
+
+// Consulta 2
+//? Valor màxim, mínim i mitjà del preus de les publicacions de l’editorial Juniper Books 
+
+db.publicacio.aggregate([
+    {$unwind: "$NomColleccio"},
+    {$lookup: {
+        from: "colleccio",
+        localField: "NomColleccio",
+        foreignField: "NomColleccio",
+        as: "colleccio"
+    }},
+    {$match: {
+        "colleccio.NomEditorial": "Juniper Books"
+    }}, 
+    {$group: {
+        _id: "$titol",
+        preu: { $first: "$preu" }
+
+    }},
+    {$group: {
+        _id: null,
+        max: { $max: "$preu" },
+        min: { $min: "$preu" },
+        avg: { $avg:  "$preu" }
+    }},
+    {$project: {
+        _id: 0,
+        max: 1,
+        min: 1,
+        avg: 1
+    }}
+]);
+
+
+// Consulta 3
+//? Artistes (nom artístic) que participen en més de 5 publicacions com a dibuixant
