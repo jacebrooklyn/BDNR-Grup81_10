@@ -10,7 +10,6 @@ if len(sys.argv) > 3:
     client = pymongo.MongoClient("mongodb://dcccluster.uab.es:8193/")
     if bd not in client.list_database_names(): # comprovem que la base de dades existeix
         print('>> La base de dades no existeix, no es pot borrar')
-        sys.exit()
     else:
         print("Borrant la base de dades...")
         client.drop_database(bd) #borrem la base de dades
