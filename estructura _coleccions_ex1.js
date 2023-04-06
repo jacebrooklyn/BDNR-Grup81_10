@@ -67,7 +67,7 @@ db.artista.insertOne([
   
   //Només publi:
       //1-Les 5 publicacions amb major preu. Mostrar només el títol i preu.
-      //9-Modificar el preu de les publicacions de primera edició i incrementar-lo un 25%.
+      //9-Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
   
   //Només artista:
       //7-Mostrar el país d’origen de l’artista o artistes que han fet més guions.
