@@ -42,6 +42,23 @@ db.publicacio.aggregate([
 // Consulta 3
 //? Artistes (nom artístic) que participen en més de 5 publicacions com a dibuixant
 
+//Consulta 4
+//? Numero de col·leccions per gènere. Mostra gènere i número total.
+
+db.colleccio.aggregate([{"$unwind": "$genere"},
+            {"$group": {"_id": "$genere", "count": {"$addToSet": "$NomColleccio"}}},
+            {"$project": {"_id": 1, "count": {"$size": "$count"}}}])
+            
+            
+//Consulta 5
+//? Per cada editorial, mostrar el recompte de col·leccions finalitzades i no finalitzades. (En aquest encara falla una coseta :) )
+db.colleccio.aggregate([{"$unwind": "$NomEditorial"},
+                {"$group": { "_id": "$NomEditorial",
+                "finalitzades": {"$addToSet": {"$cond": [{"$eq": ["$tancada", True]}, 1, 0]}},
+                "no_finalitzades": {"$addToSet": {"$cond": [{"$eq": ["$tancada", False]}, 1, 0]}}}},
+                {"$project": {"_id": 1, "finalitzades": {"$sum": "$finalitzades"} ,"no_finalitzades": {"$sum": "$no_finalitzades"}}}])
+                
+
 
 // Consulta 9
 //? Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
