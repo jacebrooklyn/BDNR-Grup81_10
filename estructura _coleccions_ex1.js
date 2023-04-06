@@ -36,7 +36,8 @@ db.publicacio.insertOne(}
     "colleccio": ["idcolleccio"],  //referenciar colleccion per id
     "personatges": [ {"_id": ObjectId, "nom": "str","tipus": "str","ISBN": int}, {} ], 
     //ENCASTAR PERSONATGES A PUBLI
-    "artistes": ["nom_artistic", "nom_artistic"] //referenciar artistes pel nombre artistic
+    "guionistes": ["nom_artistic", "nom_artistic"], //referenciar artistes pel nombre artistic
+    "dibuixants": ["nom_artistic", "nom_artistic"]
     })
 
     
