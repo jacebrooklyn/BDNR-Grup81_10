@@ -2,6 +2,7 @@ use("TendaComics");
 
 // Consulta 1
 //? Les 5 publicacions amb major preu. Mostrar només el títol i preu.
+
 db.publicacio.find({}, { _id: 0, titol: 1, preu: 1 }).sort({ preu: -1 }).limit(5);
 
 // Consulta 2
@@ -40,3 +41,12 @@ db.publicacio.aggregate([
 
 // Consulta 3
 //? Artistes (nom artístic) que participen en més de 5 publicacions com a dibuixant
+
+
+// Consulta 9
+//? Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
+db.publi.updateMany(
+    { stock: { $gt: 20 } }, //on stock superior 20
+    {$mul: { preu: 1.25 }} //incrementar preu un 25%
+);
+
