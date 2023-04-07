@@ -73,6 +73,34 @@ db.colleccio.aggregate([{"$unwind": "$NomEditorial"},
                 {"$project": {"_id": 1, "finalitzades": {"$sum": "$finalitzades"} ,"no_finalitzades": {"$sum": "$no_finalitzades"}}}])
                 
 
+// Consulta 6
+//? Mostrar les 2 col·leccions ja finalitzades amb més publicacions. Mostrar editorial i nom col·lecció. 
+db.colleccio.aggregate([
+    {$match: {
+        tancada: true
+    }},
+    {$lookup: {
+        from: "publicacio",
+        localField: "NomColleccio",
+        foreignField: "NomColleccio",
+        as: "publicacio"
+    }},
+    {$group: {
+        _id: { NomColleccio: "$NomColleccio", NomEditorial: "$NomEditorial" }, //agrupar per editorial i nom col·lecció
+        count: { $sum: { $size: "$publicacio" } } //sumar el numero de publicacions
+    }},
+    {$sort: {
+        count: -1
+    }},
+    {$limit: 2},
+    {$project: {
+        _id: 0,
+        NomColleccio: "$_id.NomColleccio",
+        NomEditorial: "$_id.NomEditorial"
+    }}
+]);
+                
+
 
 // Consulta 9
 //? Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
