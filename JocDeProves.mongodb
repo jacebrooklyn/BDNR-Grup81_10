@@ -101,6 +101,37 @@ db.colleccio.aggregate([
 ]);
                 
 
+// Consulta 7
+//? Mostrar el país d’origen de l’artista o artistes que han fet més guions.
+
+db.publicacio.aggregate([
+    {$unwind: "$guionistes"},
+    {$group: {
+        _id: "$guionistes",
+        count: {$sum: 1}
+    }},
+    {$group: {
+        _id: "$count",
+        artists: {$push: "$_id"}
+    }},
+    {$sort: {
+        _id: -1
+    }},
+    {$limit: 1},
+    {$unwind: "$artists"},
+    {$lookup: {
+        from: "artista",
+        localField: "artists",
+        foreignField: "Nom_artistic",
+        as: "artista"
+    }},
+    {$unwind: "$artista"},
+    {$project: {
+        _id: 0,
+        Pais_origen: "$artista.pais",
+    }}
+]);
+
 
 // Consulta 9
 //? Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
