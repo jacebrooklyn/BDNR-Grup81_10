@@ -41,6 +41,20 @@ db.publicacio.aggregate([
 
 // Consulta 3
 //? Artistes (nom artístic) que participen en més de 5 publicacions com a dibuixant
+db.publicacio.aggregate([
+    {$unwind: "$dibuixants"},
+    {$group: {
+        _id: "$dibuixants",
+        count: { $sum: 1 }
+    }},
+    {$match: {
+        count: { $gt: 5 }
+    }},
+    {$project: {
+        _id: 1,  
+    }}
+]);
+
 
 //Consulta 4
 //? Numero de col·leccions per gènere. Mostra gènere i número total.
