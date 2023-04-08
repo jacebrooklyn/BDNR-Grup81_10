@@ -15,23 +15,17 @@ if len(sys.argv) > 3:
         client.drop_database(bd) #borrem la base de dades
         print('>> Base de dades borrada correctament')
     
-# ---------------------------- 1. Creem la base de dades ----------------------------
+# ---------------------------- 1. Creem la base de dades --------------------------------
 client = pymongo.MongoClient("mongodb://dcccluster.uab.es:8193/")
 db = client["TendaComics"]
 
-# ---------------------------- 2. Creem les coleccions ----------------------------
-# Tindrà per identificador el nom de l'editorial i contindrà info d'aquesta
-editorial = db["editorial"]
-# Tindrà per identificador el nom de l'editorial i el de la coleccio i contindrà info de la col·lecció
-colleccio = db["colleccio"]
-# Tindrà per identificador el ISBN de la publicació i contindrà info de la publicació i l'editrial-col·lecció
-publicacio = db["publicacio"]
-# Tindrà per identificador el nom de l'artista i contindrà info d'aquest
-artista = db["artista"]
-# Tindrà per identificador el nom del personatge i contindrà info d'aquest
-personatge = db["personatge"]
+# ---------------------------- 2. Creem les coleccions -----------------------------------
+editorial = db["editorial"] # Tindrà per identificador el nom de l'editorial i contindrà info d'aquesta
+colleccio = db["colleccio"] # Tindrà per identificador el nom de l'editorial i el de la coleccio i contindrà info de la col·lecció
+publicacio = db["publicacio"] # Tindrà per identificador el ISBN de la publicació i contindrà info de la publicació i l'editrial-col·lecció
+artista = db["artista"] # Tindrà per identificador el nom de l'artista i contindrà info d'aquest
 
-# ---------------------------- 3. Carreguem les dades ----------------------------
+# ---------------------------- 3. Carreguem les dades -----------------------------------
 # 3.0 Carreguem les dades dels CSV de cada pàgina
 col_pub = pd.read_excel(fitxer_dades, sheet_name='Colleccions-Publicacions')
 personatges = pd.read_excel(fitxer_dades, sheet_name='Personatges')
@@ -97,9 +91,8 @@ if db.publicacio.count_documents({}) == 0:
     personatge_dict = personatges[['nom', 'tipus', 'isbn']].to_dict(
         'records')  # utilizem format records perque cada fila sigue dict
     for p in personatge_dict:
-        isbn = p.pop('isbn')
         # afegim el personatge a la publicació quan coincideixin ISBN's
-        db.publicacio.update_one({'ISBN': isbn}, {'$push': {'personatges': p}})
+        db.publicacio.update_one({'ISBN': p['isbn']}, {'$push': {'personatges': p}})
 
     # Comprovem que s'han afegit correctament
     if db.publicacio.count_documents({}) != 26:
@@ -130,5 +123,5 @@ if db.artista.count_documents({}) == 0:
 else:
     print('[4] >> Dades ja carregades anteriorment')
 
-# ---------------------------- 4. Tanquem la connexió ----------------------------
+# ---------------------------- 4. Tanquem la connexió --------------------------------
 client.close()
