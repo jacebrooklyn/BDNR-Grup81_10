@@ -2,7 +2,7 @@
 
 Projecte MongoDB
 
-EXERCICI 1:
+Patrons de disseny:
 Per començar, l’objectiu era crear una base de dades on emmagatzemar les publicacions de col·leccions de llibres de diferents editorials d’una tenda de còmics. Això implica la necessitat de tenir com col·leccions l’editorial, la col·lecció, la publicació, l’artista i el personatge. Les mateixes col·leccions que entitats del model E-R. Tanmateix, després ho hem canviat ja que entra també el factor de les consultes. 
 
 Igual que el model E-R cada col·lecció té els mateixos camps que atributs:
