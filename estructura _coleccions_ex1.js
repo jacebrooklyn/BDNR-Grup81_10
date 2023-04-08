@@ -51,7 +51,6 @@ db.artista.insertOne(}
     "cognoms": "str",
     "data_naix": Date,
     "pais": "str",
-    "tipus": "str" //guionista o dibuixant
     })
 
 //Colleccio personatges no cal crear perque embedded en publicacio
