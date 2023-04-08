@@ -91,8 +91,9 @@ if db.publicacio.count_documents({}) == 0:
     personatge_dict = personatges[['nom', 'tipus', 'isbn']].to_dict(
         'records')  # utilizem format records perque cada fila sigue dict
     for p in personatge_dict:
+        isbn=p.pop('isbn')
         # afegim el personatge a la publicació quan coincideixin ISBN's
-        db.publicacio.update_one({'ISBN': p['isbn']}, {'$push': {'personatges': p}})
+        db.publicacio.update_one({'ISBN': isbn}, {'$push': {'personatges': p}})
 
     # Comprovem que s'han afegit correctament
     if db.publicacio.count_documents({}) != 26:
