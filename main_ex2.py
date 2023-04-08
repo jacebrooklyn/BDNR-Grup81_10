@@ -77,7 +77,7 @@ else:
 # si no hi ha dades a la colecció publicacio, les carreguem
 if db.publicacio.count_documents({}) == 0:
     print('\n3. Carregant dades de les publicacions...')
-    publicacio_dict = col_pub[['ISBN', 'NomColleccio', 'titol', 'stock', 'autor', 'preu', 'num_pagines']].to_dict(
+    publicacio_dict = col_pub[['ISBN','NomEditorial', 'NomColleccio', 'titol', 'stock', 'autor', 'preu', 'num_pagines']].to_dict(
         'records')  # utilizem format records perque cada fila sigue dict
     #afegim els guionistes i dibuixants com a llistes
     g = col_pub['guionistes'].apply(lambda x: x.strip('[]').split(','))
@@ -91,9 +91,8 @@ if db.publicacio.count_documents({}) == 0:
     personatge_dict = personatges[['nom', 'tipus', 'isbn']].to_dict(
         'records')  # utilizem format records perque cada fila sigue dict
     for p in personatge_dict:
-        isbn=p.pop('isbn')
         # afegim el personatge a la publicació quan coincideixin ISBN's
-        db.publicacio.update_one({'ISBN': isbn}, {'$push': {'personatges': p}})
+        db.publicacio.update_one({'ISBN': p['isbn']}, {'$push': {'personatges': p}})
 
     # Comprovem que s'han afegit correctament
     if db.publicacio.count_documents({}) != 26:
