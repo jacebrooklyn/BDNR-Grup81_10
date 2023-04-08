@@ -32,8 +32,10 @@ db.publicacio.insertOne(}
     "autor": "str",
     "preu": int, 
     "num_pagines": int,
+    //nomes una editorial per publicacio
+    "nomeditorial": "editorial" //referenciar editorial
     //només hi ha una colleccio per publicacio
-    "colleccio": ["idcolleccio"],  //referenciar colleccion per id
+    "colleccio": "nomcolleccio",  //referenciar colleccion 
     "personatges": [ {"_id": ObjectId, "nom": "str","tipus": "str","ISBN": int}, {} ], 
     //ENCASTAR PERSONATGES A PUBLI
     "guionistes": ["nom_artistic", "nom_artistic"], //referenciar artistes pel nombre artistic
