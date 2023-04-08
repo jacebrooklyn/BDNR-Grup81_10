@@ -133,10 +133,26 @@ db.publicacio.aggregate([
 ]);
 
 
+// Consulta 8
+//? Mostrar les publicacions amb tots els personatges de tipus “heroe”
+db.publicacio.find(
+    {$and: [
+        {"personatges": {$exists: true}},
+        {personatges: {$not: {$elemMatch: {tipus: {$ne: "heroe"}}}}},
+    ]},
+    { _id: 0, ISBN: 1}
+);
+
+
 // Consulta 9
 //? Modificar el preu de les publicacions amb stock superior a 20 exemplars i incrementar-lo un 25%.
 db.publi.updateMany(
     { stock: { $gt: 20 } }, //on stock superior 20
     {$mul: { preu: 1.25 }} //incrementar preu un 25%
 );
+
+
+// Consulta 10
+//? Mostrar ISBN i títol de les publicacions conjuntament amb tota la seva informació dels personatges. 
+db.publicacio.find({}, { _id: 0, ISBN:1, titol: 1, personatges: 1});
 
