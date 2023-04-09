@@ -2,7 +2,7 @@ import pymongo
 import sys
 import pandas as pd
 
-# ---------------------------- 0. Guardem els paràmetres ----------------------------
+# ---------------------------- 0. Gestió dels paràmetres ----------------------------
 fitxer_dades = sys.argv[2]
 
 if len(sys.argv) > 3:
