@@ -2,24 +2,25 @@ import pymongo
 import sys
 import pandas as pd
 
-# ---------------------------- 0. Gestió dels paràmetres ----------------------------
+# ---------------------------- 1. Gestió dels paràmetres ----------------------------
 fitxer_dades = sys.argv[2]
-
 if len(sys.argv) > 3:
     bd = sys.argv[5] # nom de la base de dades
     client = pymongo.MongoClient("mongodb://dcccluster.uab.es:8193/")
     if bd not in client.list_database_names(): # comprovem que la base de dades existeix
-        print('>> La base de dades no existeix, no es pot borrar')
+        print('\nERROR: La base de dades no existeix, no es pot borrar')
+        sys.exit()
     else:
-        print("Borrant la base de dades...")
+        print("\n0. Borrant la base de dades...")
         client.drop_database(bd) #borrem la base de dades
-        print('>> Base de dades borrada correctament')
+        print('[0] >> Base de dades borrada correctament')
+else:
+    print('\nERROR: Falten paràmetres')
+    sys.exit()
     
-# ---------------------------- 1. Creem la base de dades --------------------------------
-client = pymongo.MongoClient("mongodb://dcccluster.uab.es:8193/")
+# ---------------------------- 2. Creem la DB i les coleccions -----------------------------------
 db = client["TendaComics"]
 
-# ---------------------------- 2. Creem les coleccions -----------------------------------
 editorial = db["editorial"] # Tindrà per identificador el nom de l'editorial i contindrà info d'aquesta
 colleccio = db["colleccio"] # Tindrà per identificador el nom de l'editorial i el de la coleccio i contindrà info de la col·lecció
 publicacio = db["publicacio"] # Tindrà per identificador el ISBN de la publicació i contindrà info de la publicació i l'editrial-col·lecció
@@ -32,12 +33,10 @@ personatges = pd.read_excel(fitxer_dades, sheet_name='Personatges')
 artists = pd.read_excel(fitxer_dades, sheet_name='Artistes')
 
 # 3.1 Carreguem les dades de les editorials
-# db.editorial.drop() # eliminem la colecció per si ja hi ha dades
 # si no hi ha dades a la colecció editorial, les carreguem
 if db.editorial.count_documents({}) == 0:
     print('\n1. Carregant dades de les editorials...')
-    editorial_dict = col_pub[['NomEditorial', 'resposable', 'adreca', 'pais']].to_dict(
-        'records')  # utilizem format records perque cada fila sigue dict
+    editorial_dict = col_pub[['NomEditorial', 'resposable', 'adreca', 'pais']].to_dict('records')  # utilizem format records perque cada fila sigue dict
     db.editorial.insert_many(editorial_dict)  # carreguem les dades
     # Comprovem que s'han afegit correctament
     if db.editorial.count_documents({}) != 26:
@@ -50,7 +49,6 @@ else:
     print('[1] >> Dades ja carregades anteriorment')
 
 # 3.2 Carreguem les dades de les coleccions
-# db.colleccio.drop() # eliminem la colecció per si ja hi ha dades
 # si no hi ha dades a la colecció colleccio, les carreguem
 if db.colleccio.count_documents({}) == 0:
     print('\n2. Carregant dades de les colleccions...')
@@ -73,7 +71,6 @@ else:
     print('[2] >> Dades ja carregades anteriorment')
 
 # 3.3 Carreguem les dades de les publicacions
-# db.publicacio.drop() # eliminem la colecció per si ja hi ha dades
 # si no hi ha dades a la colecció publicacio, les carreguem
 if db.publicacio.count_documents({}) == 0:
     print('\n3. Carregant dades de les publicacions...')
@@ -91,8 +88,9 @@ if db.publicacio.count_documents({}) == 0:
     personatge_dict = personatges[['nom', 'tipus', 'isbn']].to_dict(
         'records')  # utilizem format records perque cada fila sigue dict
     for p in personatge_dict:
+        isbn = p.pop('isbn')
         # afegim el personatge a la publicació quan coincideixin ISBN's
-        db.publicacio.update_one({'ISBN': p['isbn']}, {'$push': {'personatges': p}})
+        db.publicacio.update_one({'ISBN': isbn}, {'$push': {'personatges': p}})
 
     # Comprovem que s'han afegit correctament
     if db.publicacio.count_documents({}) != 26:
@@ -105,7 +103,6 @@ else:
     print('[3] >> Dades ja carregades anteriorment')
 
 # 3.4 Carreguem les dades dels artistes
-# db.artista.drop() # eliminem la colecció per si ja hi ha dades
 # si no hi ha dades a la colecció artista, les carreguem
 if db.artista.count_documents({}) == 0:
     print('\n4. Carregant dades dels artistes...')
@@ -118,10 +115,10 @@ if db.artista.count_documents({}) == 0:
         print("[4] >> Error: No s'han carregat tots els artistes")
         sys.exit()
     else:
-        print("[4] >> Dades carregades correctament")
+        print("[4] >> Dades carregades correctament\n")
 
 else:
-    print('[4] >> Dades ja carregades anteriorment')
+    print('[4] >> Dades ja carregades anteriorment\n')
 
 # ---------------------------- 4. Tanquem la connexió --------------------------------
 client.close()
