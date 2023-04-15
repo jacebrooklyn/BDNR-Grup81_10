@@ -59,10 +59,25 @@ db.publicacio.aggregate([
 //Consulta 4
 //? Numero de col·leccions per gènere. Mostra gènere i número total.
 
-db.colleccio.aggregate([{"$unwind": "$genere"},
-            {"$group": {"_id": "$genere", "count": {"$addToSet": "$NomColleccio"}}},
-            {"$project": {"_id": 1, "count": {"$size": "$count"}}}])
-            
+db.colleccio.aggregate([
+    {
+      $unwind: "$genere"
+    },
+    {
+      $group: {
+        "_id": "$genere",
+        "total_colleccions": { $addToSet: "$NomColleccio" },
+        "count": { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        "_id": 0,
+        "genere": "$_id",
+        "total_colleccions": { $size: "$total_colleccions" },
+      }
+    }
+  ])
             
 //Consulta 5
 //? Per cada editorial, mostrar el recompte de col·leccions finalitzades i no finalitzades. (En aquest encara falla una coseta :) )
