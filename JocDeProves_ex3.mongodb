@@ -81,11 +81,45 @@ db.colleccio.aggregate([
             
 //Consulta 5
 //? Per cada editorial, mostrar el recompte de col·leccions finalitzades i no finalitzades. (En aquest encara falla una coseta :) )
-db.colleccio.aggregate([{"$unwind": "$NomEditorial"},
-                {"$group": { "_id": "$NomEditorial",
-                "finalitzades": {"$addToSet": {"$cond": [{"$eq": ["$tancada", True]}, 1, 0]}},
-                "no_finalitzades": {"$addToSet": {"$cond": [{"$eq": ["$tancada", False]}, 1, 0]}}}},
-                {"$project": {"_id": 1, "finalitzades": {"$sum": "$finalitzades"} ,"no_finalitzades": {"$sum": "$no_finalitzades"}}}])
+db.colleccio.aggregate([
+  {
+    $group: {
+      _id: "$NomEditorial",
+      finalizadas: {
+        $addToSet: {
+          $cond: {
+            if: "$tancada",
+            then: "$NomColleccio",
+            else: null
+          }
+        }
+      },
+      noFinalizadas: {
+        $addToSet: {
+          $cond: {
+            if: { $not: "$tancada" },
+            then: "$NomColleccio",
+            else: null
+          }
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      finalizadas: { $filter: { input: "$finalizadas", as: "col", cond: { $ne: ["$$col", null] } } },
+      noFinalizadas: { $filter: { input: "$noFinalizadas", as: "col", cond: { $ne: ["$$col", null] } } }
+    }
+  },
+  {
+    $project: {
+      _id: 1,
+      finalizadas: { $size: "$finalizadas" },
+      noFinalizadas: { $size: "$noFinalizadas" }
+    }
+  }
+]);
                 
 
 // Consulta 6
