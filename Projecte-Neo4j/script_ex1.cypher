@@ -15,8 +15,8 @@ CREATE INDEX FOR (H:Habitatge) ON (H.Id_Llar)
 // 4. CARREGUEM RELACIONS ENTRE INDIVIDUS I HABITATGES
 LOAD CSV WITH HEADERS FROM 'file:///VIU.csv' AS row
 MATCH (individu:Individu {Id: row.IND})
-MATCH (habitatge:Habitatge {Year: toInteger(row.Year), Municipi: row.Location, Id_Llar: toInteger(row.HOUSE_ID)})
-MERGE (individu)-[:VIU]->(habitatge)
+MATCH (habitatge:Habitatge {Id_Llar: toInteger(row.HOUSE_ID), Municipi: row.Location, Any_Padro: toInteger(row.Year)})
+MERGE (individu)-[r:VIU]->(habitatge)
 
 // 5. CARREGUEM RELACIONS FAMILIARS ENTRE INDIVIDUS
 LOAD CSV WITH HEADERS FROM 'file:///FAMILIA.csv' AS row
