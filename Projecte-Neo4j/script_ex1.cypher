@@ -19,10 +19,10 @@ MATCH (habitatge:Habitatge {Id_Llar: toInteger(row.HOUSE_ID), Municipi: row.Loca
 MERGE (individu)-[r:VIU]->(habitatge)
 
 // 5. CARREGUEM RELACIONS FAMILIARS ENTRE INDIVIDUS
-LOAD CSV WITH HEADERS FROM 'file:///FAMILIA.csv' AS row
-MATCH (ind1:Individu {Id: row.ID_1})
-MATCH (ind2:Individu {Id: row.ID_2})
-CREATE (ind1)-[:RELACIO {Relacio: row.Relacio, Relacio_Harmonitzada: row.Relacio_Harmonitzada}]->(ind2)
+LOAD CSV WITH HEADERS FROM 'file:///FAMILIA.csv' AS rowF
+MATCH (ind1:Individu {Id: rowF.ID_1})
+MATCH (ind2:Individu {Id: rowF.ID_2})
+MERGE (ind1)-[:RELACIO {Relacio: rowF.Relacio, Relacio_harmonitzada: rowF.Relacio_Harmonitzada}]->(ind2)
 
 // 6. CARREGUEM RELACIONS ENTRE INDIVIDUS IGUALS EN DIFERENTS ANYS
 LOAD CSV WITH HEADERS FROM 'file:///SAME_AS.csv' AS row
