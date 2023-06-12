@@ -28,5 +28,5 @@ MERGE (ind1)-[:RELACIO {Relacio: rowF.Relacio, Relacio_harmonitzada: rowF.Relaci
 LOAD CSV WITH HEADERS FROM 'file:///SAME_AS.csv' AS row
 MATCH (ind1:Individu {Id: row.Id_A})
 MATCH (ind2:Individu {Id: row.Id_B})
-CREATE (ind1)-[:SAME_AS]->(ind2)
+MERGE (ind1)-[:SAME_AS]->(ind2)
 
