@@ -7,7 +7,8 @@ MERGE (i:Individu {Id: id})
 RETURN COUNT(i)
 
 // creem constraints per a mantenir l'integritat de les dades
-CREATE CONSTRAINT ON (i:Individu) ASSERT i.Id IS UNIQUE
+CREATE CONSTRAINT Unic_Individu FOR (i:Individu)
+REQUIRE i.Id IS UNIQUE
 
 // 2. CARREGUEM HABITATGES
 WITH "file:///HABITATGES.csv" AS url2
