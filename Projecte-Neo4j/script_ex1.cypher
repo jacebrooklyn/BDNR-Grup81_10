@@ -23,6 +23,10 @@ CREATE CONSTRAINT NotNull_AnyPadro FOR (h:Habitatge) REQUIRE h.Any_Padro IS NOT 
 CREATE CONSTRAINT NotNull_Municipi FOR (h:Habitatge) REQUIRE h.Municipi IS NOT NULL
 CREATE CONSTRAINT NotNull_IdLlar FOR (h:Habitatge) REQUIRE h.Id_Llar IS NOT NULL
 
+// creem constraints per mantenir la unicitat de l'habitatge
+CREATE CONSTRAINT Unic_Habitatge FOR (h:Habitatge)
+    REQUIRE (h.Id_Llar, h.Municipi, h.Any_Padro) IS NODE KEY
+    
 // 3. CARREGUEM RELACIONS ENTRE INDIVIDUS I HABITATGES
 WITH "file:///VIU.csv" AS url3
 LOAD CSV WITH HEADERS FROM url3 AS rowV
