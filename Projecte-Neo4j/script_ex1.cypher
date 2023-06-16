@@ -55,7 +55,9 @@ MERGE (ind1)-[ras:SAME_AS]->(ind2)
 RETURN COUNT(ras)
 
 // 6. DEFINIM INDEXS PER A MILLORAR LA VELOCITAT DE LES CONSULTES
-CREATE INDEX Index_municipi IF NOT EXISTS FOR (h:Habitatge) ON (h.Municipi) 
-CREATE INDEX Index_Padro IF NOT EXISTS FOR (h:Habitatge) ON (h.Any_Padro)
+CREATE INDEX Index_Municipi IF NOT EXISTS FOR (h:Habitatge) ON (h.Municipi)
+CREATE INDEX Index_Padro IF NOT EXISTS FOR (h:Habitatge) ON (h.Any_Padro) 
+CREATE INDEX Index_Name IF NOT EXISTS FOR (i:Individu) ON (i.Name)
 CREATE INDEX Index_Surname IF NOT EXISTS FOR (i:Individu) ON (i.Surname)
+CREATE INDEX Index_Second_Surname IF NOT EXISTS FOR (i:Individu) ON (i.Second_Surname)
 //...
