@@ -54,6 +54,3 @@ CREATE INDEX Index_municipi IF NOT EXISTS FOR (h:Habitatge) ON (h.Municipi)
 CREATE INDEX Index_Padro IF NOT EXISTS FOR (h:Habitatge) ON (h.Any_Padro)
 CREATE INDEX Index_Surname IF NOT EXISTS FOR (i:Individu) ON (i.Surname)
 //...
-
-// 7. CREEM CONSTRAINTS PER A MANTENIR L'INTREGITAT DE LES DADES
-CREATE CONSTRAINT ON (i:Individu) ASSERT i.Id IS UNIQUE
