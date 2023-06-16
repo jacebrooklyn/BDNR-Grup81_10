@@ -42,9 +42,8 @@ MERGE (ind1)-[ras:SAME_AS]->(ind2)
 RETURN COUNT(ras)
 
 // 6. DEFINIM INDEXS PER A MILLORAR LA VELOCITAT DE LES CONSULTES
-CREATE INDEX FOR (i:Individu) ON (i.Municipi)
-CREATE INDEX FOR (i:Individu) ON (i.Year)
-CREATE INDEX FOR (i:Individu) ON (i.Id)
+CREATE INDEX Index_municipi IF NOT EXISTS FOR (h:Habitatge) ON (h.Municipi) 
+CREATE INDEX Index_Padro IF NOT EXISTS FOR (h:Habitatge) ON (h.Any_Padro) 
 //...
 
 // 7. CREEM CONSTRAINTS PER A MANTENIR L'INTREGITAT DE LES DADES
