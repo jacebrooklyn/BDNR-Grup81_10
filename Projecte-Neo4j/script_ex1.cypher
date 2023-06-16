@@ -6,6 +6,9 @@ MERGE (i:Individu {Id: id})
     SET i.Name = name, i.Surname = surname, i.Second_Surname = second_surname
 RETURN COUNT(i)
 
+// creem constraints per a mantenir l'integritat de les dades
+CREATE CONSTRAINT ON (i:Individu) ASSERT i.Id IS UNIQUE
+
 // 2. CARREGUEM HABITATGES
 WITH "file:///HABITATGES.csv" AS url2
 LOAD CSV WITH HEADERS FROM url2 AS rowH
@@ -13,6 +16,11 @@ WITH toInteger(rowH.Id_Llar) AS idllar, toInteger(rowH.Any_Padro) AS anypadro, r
 MERGE (h:Habitatge {Id_Llar: idllar, Any_Padro: anypadro, Municipi: municipi})
     SET h.Carrer = carrer, h.Numero = numero
 RETURN COUNT(h)
+
+// creem constraints per evitar els null en els habitatges
+CREATE CONSTRAINT NotNull_AnyPadro FOR (h:Habitatge) REQUIRE h.Any_Padro IS NOT NULL
+CREATE CONSTRAINT NotNull_Municipi FOR (h:Habitatge) REQUIRE h.Municipi IS NOT NULL
+CREATE CONSTRAINT NotNull_IdLlar FOR (h:Habitatge) REQUIRE h.Id_Llar IS NOT NULL
 
 // 3. CARREGUEM RELACIONS ENTRE INDIVIDUS I HABITATGES
 WITH "file:///VIU.csv" AS url3
