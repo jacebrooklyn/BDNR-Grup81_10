@@ -4,7 +4,7 @@ LOAD CSV WITH HEADERS FROM url1 AS rowI
 WITH toInteger(rowI.Id) AS id, toInteger(rowI.Year) AS year, 
     rowI.name AS name, rowI.surname AS surname, 
     rowI.second_surname AS second_surname
-WHERE id IS NOT NULL
+WHERE id<>'null'
 MERGE (i:Individu {Id: id})
     SET i.Name = name, i.Surname = surname, i.Second_Surname = second_surname
 RETURN COUNT(i)
@@ -18,7 +18,7 @@ WITH "file:///HABITATGES.csv" AS url2
 LOAD CSV WITH HEADERS FROM url2 AS rowH
 WITH toInteger(rowH.Id_Llar) AS idllar, toInteger(rowH.Any_Padro) AS anypadro, 
         rowH.Municipi AS municipi, rowH.Carrer AS carrer, rowH.Numero AS numero
-WHERE idllar IS NOT NULL
+WHERE idllar<>'null' AND anypadro<>'null' AND municipi<>'null'
 MERGE (h:Habitatge {Id_Llar: idllar, Any_Padro: anypadro, Municipi: municipi})
     SET h.Carrer = carrer, h.Numero = numero
 RETURN COUNT(h)
@@ -41,7 +41,7 @@ MATCH (individu:Individu
     {Id: ind_ID})
 MATCH (habitatge:Habitatge 
     {Id_Llar: houseid, Municipi: location, Any_Padro: year})
-WHERE ind_ID IS NOT NULL AND houseid IS NOT NULL AND location IS NOT NULL AND year IS NOT NULL
+WHERE ind_ID<>'null' AND houseid<>'null' AND location<>'null' AND year<>'null'
 MERGE (individu)-[rviu:VIU]->(habitatge)
 RETURN COUNT(rviu)
 
@@ -52,7 +52,7 @@ WITH toInteger(rowF.ID_1) AS id1, toInteger(rowF.ID_2) AS id2,
     rowF.Relacio AS relacio, rowF.Relacio_Harmonitzada AS relacio_harmonitzada
 MATCH (individu1:Individu {Id: id1})
 MATCH (individu2:Individu {Id: id2})
-WHERE id1 IS NOT NULL AND id2 IS NOT NULL
+WHERE id1<>'null' AND id2<>'null'
 MERGE (individu1)-[rel:RELATION {Relacio: relacio, Relacio_Harmonitzada: relacio_harmonitzada}]->(individu2)
 RETURN COUNT(rel)
 
@@ -62,7 +62,7 @@ LOAD CSV WITH HEADERS FROM url5 AS rowA
 WITH toInteger(rowA.Id_A) AS idA, toInteger(rowA.Id_B) AS idB
 MATCH (ind1:Individu {Id: idA})
 MATCH (ind2:Individu {Id: idB})
-WHERE idA IS NOT NULL AND idB IS NOT NULL
+WHERE idA<>'null' AND idB<>'null'
 MERGE (ind1)-[ras:SAME_AS]->(ind2)
 RETURN COUNT(ras)
 
@@ -73,4 +73,3 @@ CREATE INDEX Index_Padro IF NOT EXISTS FOR (h:Habitatge) ON (h.Any_Padro)
 CREATE INDEX Index_Name IF NOT EXISTS FOR (i:Individu) ON (i.Name)
 CREATE INDEX Index_Surname IF NOT EXISTS FOR (i:Individu) ON (i.Surname)
 CREATE INDEX Index_Second_Surname IF NOT EXISTS FOR (i:Individu) ON (i.Second_Surname)
-//...
