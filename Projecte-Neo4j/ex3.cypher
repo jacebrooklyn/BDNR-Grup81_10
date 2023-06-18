@@ -72,3 +72,17 @@ CALL gds.graph.project('graph-ex3-b',
     ['Individu', 'Habitatge'],
     ['VIU', 'RELATION', 'MATEIX_HAB']
     );
+
+// 3. Calculeu la similaritat entre els nodes del graf que acabeu de crear, escriviu el resultat de nou a la base de dades i interpreteu els resultats obtinguts.
+CALL gds.nodeSimilarity.write('graph-ex3-b', {
+    writeRelationshipType: 'SIMILAR',
+    writeProperty: 'score'
+    })
+
+YIELD nodesCompared, relationshipsWritten
+
+MATCH node=()-[r:SIMILAR]->()
+RETURN node, r.score
+ORDER BY r.score DESC
+LIMIT 100;        
+
